@@ -7,7 +7,6 @@ using namespace std;
 
 class Produs {
 protected:
-    static const int comision = 10;
     string nume;
     vector <Ingredient> ing;
 public:
