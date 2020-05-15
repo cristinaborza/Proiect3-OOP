@@ -11,7 +11,7 @@ class Pizza: public Produs {
     static const int manopera = 10;
     bool vegetariana;
 public:
-    ///construxtorii
+    ///constructorii
     Pizza();
     Pizza(string, vector <Ingredient> ing, bool);
 
