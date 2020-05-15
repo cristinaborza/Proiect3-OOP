@@ -8,10 +8,12 @@
 using namespace std;
 
 class Pizza: public Produs {
+    static const int manopera = 10;
+    bool vegetariana;
 public:
     ///construxtorii
     Pizza();
-    Pizza(string, vector <Ingredient> ing);
+    Pizza(string, vector <Ingredient> ing, bool);
 
     ///copy-constructorul
     Pizza(const Pizza&);
@@ -25,6 +27,10 @@ public:
 
     ///metoda care calculeaza pretul
     virtual int calculeazaPret() const;
+
+    ///get si set
+    void setVeg(bool);
+    bool getVeg();
 
     ///citire / scriere
     friend istream& operator >>(istream&, Pizza&);
