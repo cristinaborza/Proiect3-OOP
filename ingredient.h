@@ -6,11 +6,12 @@ using namespace std;
 
 class Ingredient {
     string nume;
+    int cantitate;
     int pret;
 public:
     ///constructorii
     Ingredient();
-    Ingredient(string, int);
+    Ingredient(string, int, int);
 
     ///copy-constructorul
     Ingredient(const Ingredient&);
@@ -28,6 +29,8 @@ public:
     ///get si set
     int getPret();
     void setPret(int);
+    int getCant();
+    void setCant(int);
     string getNume();
     void setNume(string);
 
