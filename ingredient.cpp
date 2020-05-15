@@ -1,24 +1,27 @@
 #include "ingredient.h"
 
-Ingredient::Ingredient(): nume(""), pret(0) {
+Ingredient::Ingredient(): nume(""), cantitate(0), pret(0){
 }
 
-Ingredient::Ingredient(string nume, int pret): nume(nume), pret(pret) {
+Ingredient::Ingredient(string nume, int cantitate, int pret): nume(nume), cantitate(cantitate), pret(pret) {
 }
 
 Ingredient::Ingredient(const Ingredient &other) {
     nume = other.nume;
+    cantitate = other.cantitate;
     pret = other.pret;
 }
 
 Ingredient& Ingredient::operator =(const Ingredient &other) {
     nume = other.nume;
+    cantitate = other.cantitate;
     pret = other.pret;
     return *this;
 }
 
 Ingredient::~Ingredient() {
     nume = "";
+    cantitate = 0;
     pret = 0;
 }
 
@@ -28,6 +31,14 @@ int Ingredient::getPret() {
 
 void Ingredient::setPret(int pret) {
     this -> pret = pret;
+}
+
+int Ingredient::getCant() {
+    return cantitate;
+}
+
+void Ingredient::setCant(int cant) {
+    this -> cantitate = cant;
 }
 
 string Ingredient::getNume() {
@@ -40,12 +51,13 @@ void Ingredient::setNume(string nume) {
 
 istream& operator >>(istream &f, Ingredient &ing) {
     string nume;
-    int pret;
+    int pret, cantitate;
 
-    cout << "Introduceti numele si pretul:\n";
-    f >> nume >> pret;
+    cout << "Introduceti numele, cantitatea si pretul:\n";
+    f >> nume >> cantitate >> pret;
 
     ing.nume = nume;
+    ing.cantitate = cantitate;
     ing.pret = pret;
 
     return f;
