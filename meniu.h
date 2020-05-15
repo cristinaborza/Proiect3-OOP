@@ -1,7 +1,5 @@
 #include <bits/stdc++.h>
-
-#include "ingredient.h"
-#include "pizzaVegetariana.h"
+#include "pizzaOnline.h"
 
 #pragma once
 
@@ -9,19 +7,22 @@ using namespace std;
 
 template <class T>
 class Meniu {
+    vector <T> prod;
     static int idx;
-    map <T, vector <Ingredient> > prod;
+    int valoareIncasata;
 public:
     ///constructorii
     Meniu() {
+        valoareIncasata = 0;
     }
 
-    Meniu(map <T, vector <Ingredient> > prod): prod(prod) {
+    Meniu(vector <T> prod, int val): prod(prod), valoareIncasata(val){
     }
 
     ///copy-constructorul
     Meniu(const Meniu &other) {
         prod = other.prod;
+        valoareIncasata = other.valoareIncasata;
     }
 
     ///destructorul
@@ -29,40 +30,46 @@ public:
     }
 
     ///operatorul +=, =
-    void operator +=(const int x) {
-        idx = idx + x;
+    void operator +=(const T &x) {
+        prod.push_back (x);
+        idx = idx + 1;
     }
 
     Meniu& operator =(const Meniu &other) {
         prod = other.prod;
+        valoareIncasata = other.valoareIncasata;
         return *this;
-    }
-
-    ///adauga un produs de tip T la meniu
-    void adauga(T p) {
-        prod[p] = p.getIng();
     }
 
     ///verifica daca un produs de tip T exista deja
     bool check(string nume) {
         for (auto it: prod) {
-            T aux = it.first;
-            if (aux.getNume() == nume) return true;
+            if (it.getNume() == nume) return true;
         }
 
         return false;
     }
 
-    ///returneaza pretul produsului cu numele nume
-    int getPret(string nume) {
-        for (auto it: prod) {
-            T aux = it.first;
-            if (aux.getNume() == nume) {
-                return aux.calculeazaPret();
-            }
-        }
+    ///returneaza pretul produsului de pe pozitia pos
+    int getPret(int pos) {
+        T p = prod[pos];
+        return p.calculeazaPret();
+    }
 
-        return 0;
+
+    ///vinde produsul de la pozitia pos
+    void vinde(const int pos) {
+        T p = prod[pos - 1];
+        valoareIncasata = valoareIncasata + p.calculeazaPret();
+        cout << "Costul este de: " << p.calculeazaPret() << " lei.\n";
+    }
+
+    static int getIdx() {
+        return idx;
+    }
+
+    int getIncasari() {
+        return valoareIncasata;
     }
 
     ///scriere
@@ -70,27 +77,33 @@ public:
         g << "Numarul de produse este:" << m.idx << '\n';
         int idx =  0;
         for (auto it: m.prod) {
-            TT aux = it.first;
-            g << ++idx << "." << aux << '\n';
+            g << ++idx << "." << it << '\n';
         }
+
         return g;
     }
 };
 
-template <> class Meniu <PizzaVegetariana> {
-    static double valIncasari;
-    vector <PizzaVegetariana> v;
+template <> class Meniu <PizzaOnline> {
+    vector <PizzaOnline> prod;
+    static int idx;
+    int valoareIncasata;
+    int valoareVegetariene;
 public:
     ///constructorii
     Meniu() {
+        valoareIncasata = 0;
+        valoareVegetariene = 0;
     }
 
-    Meniu(vector <PizzaVegetariana> v): v(v) {
+    Meniu(vector <PizzaOnline> v, int val, int valVeg): prod(v), valoareIncasata(val), valoareVegetariene(valVeg) {
     }
 
     ///copy-constructorul
     Meniu(const Meniu &other) {
-        v = other.v;
+        prod = other.prod;
+        valoareIncasata = other.valoareIncasata;
+        valoareVegetariene = other.valoareVegetariene;
     }
 
     ///destructorul
@@ -99,48 +112,56 @@ public:
 
     ///opertatorii =, +=
     Meniu& operator =(const Meniu &other) {
-        v = other.v;
+        prod = other.prod;
+        valoareIncasata = other.valoareIncasata;
+        valoareVegetariene = other.valoareVegetariene;
         return *this;
     }
 
-    void operator +=(const double x) {
-        valIncasari += x;
-    }
-
-    ///adauga o pizza veg in meniu
-    void adauga(PizzaVegetariana p) {
-        v.push_back (p);
+    void operator +=(const PizzaOnline &x) {
+        prod.push_back(x);
+        idx = idx + 1;
     }
 
     ///returneaza pretul prodului p
-    int getPret(string nume) {
-        for (auto it: v) {
-            if (it.getNume() == nume) {
-                return it.calculeazaPret();
-            }
-        }
-
-        return 0;
+    int getPret(int idx) {
+        PizzaOnline p = prod[idx];
+        return p.calculeazaPret();
     }
 
     ///verifica daca pizza vegetariana p exista deja in meniu
     bool check (string nume) {
-        for (auto it: v) {
+        for (auto it: prod) {
             if (it.getNume() == nume) return true;
         }
         return false;
     }
 
-    ///returneaza valoarea totala a pizzelor comandate
-    static double getValIncasari() {
-        return valIncasari;
+    ///vinde produsul de pe pozitia pos
+    void vinde(const int pos) {
+        PizzaOnline p = prod[pos - 1];
+        valoareIncasata = valoareIncasata + p.calculeazaPret();
+        if (p.getVeg() == true) valoareVegetariene = valoareVegetariene + p.calculeazaPret();
+        cout << "Costul este de: " << p.calculeazaPret() << " lei.\n";
+    }
+
+    static int getIdx() {
+        return idx;
+    }
+
+    int getIncasari() {
+        return valoareIncasata;
+    }
+
+    int getIncasariVeg() {
+        return valoareVegetariene;
     }
 
     ///scrierea
-    friend ostream& operator <<(ostream &g, Meniu<PizzaVegetariana> &m) {
-        g << "Numarul de produse din meniu este: " << m.v.size() << '\n';
+    friend ostream& operator <<(ostream &g, Meniu<PizzaOnline> &m) {
+        g << "Numarul de produse din meniu este: " << m.idx << '\n';
         int idx = 0;
-        for (auto it: m.v) {
+        for (auto it: m.prod) {
             g << ++idx << "." << it << '\n';
         }
 
