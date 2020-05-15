@@ -3,18 +3,20 @@
 Pizza::Pizza() {
 }
 
-Pizza::Pizza(string nume, vector <Ingredient> v): Produs(nume, v) {
+Pizza::Pizza(string nume, vector <Ingredient> v, bool veg): Produs(nume, v), vegetariana(veg) {
 }
 
-Pizza::Pizza(const Pizza &other): Produs(other) {
+Pizza::Pizza(const Pizza &other): Produs(other), vegetariana(other.vegetariana){
 }
 
 Pizza& Pizza::operator =(const Pizza &other) {
     this -> Produs::operator=(other);
+    this -> vegetariana = other.vegetariana;
     return *this;
 }
 
 Pizza::~Pizza() {
+    vegetariana = false;
 }
 
 bool Pizza::operator <(const Pizza &other) const {
@@ -25,17 +27,29 @@ bool Pizza::operator <(const Pizza &other) const {
 int Pizza::calculeazaPret() const {
     int ans = 0;
     for (auto it: ing) {
-        ans += it.getPret();
+        ans += it.getPret() * it.getCant();
     }
 
-    ans = ans + comision;
+    ans = ans + Pizza::manopera;
     return ans;
+}
+
+void Pizza::setVeg(bool veg) {
+    vegetariana = veg;
+}
+
+bool Pizza::getVeg() {
+    return vegetariana;
 }
 
 istream& operator >>(istream &f, Pizza &p) {
     cout << "Intruduceti numele produsului:\n";
     string nume; f >> nume;
     p.setNume(nume);
+
+    cout << "Introduceti daca e sau nu vegetariana(0 - nu e, 1 - e):\n";
+    bool veg; f >> veg;
+    p.setVeg(veg);
 
     cout << "Introduceti numarul de ingrediente:\n";
     int n; f >> n;
